@@ -1,0 +1,437 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-gradient: radial-gradient(circle at center, #1e202c 0%, #0d0e12 100%);
+  --surface-glass: rgba(30, 32, 44, 0.6);
+  --surface-glass-border: rgba(255, 255, 255, 0.08);
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --accent: #6366f1; /* Indigo */
+  --accent-hover: #4f46e5;
+  --accent-glow: rgba(99, 102, 241, 0.35);
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --shadow-premium: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-gradient);
+  color: var(--text-primary);
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism Panel Class */
+.glass-panel {
+  background: var(--surface-glass);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  border: 1px solid var(--surface-glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border-radius: 16px;
+  transition: var(--transition-smooth);
+}
+
+/* Floating Header */
+header {
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto 10px;
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px 2px var(--accent-glow);
+  animation: pulse 2s infinite;
+}
+
+h1 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+}
+
+@media (min-width: 640px) {
+  h1 {
+    max-width: 600px;
+    font-size: 1.25rem;
+  }
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Flipbook Core Container */
+main {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.viewport-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 1600px;
+  max-height: 85vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Flipbook element */
+#book-wrapper {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  box-shadow: var(--shadow-premium);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#book-wrapper.loaded {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.flip-book {
+  background: transparent;
+  display: none;
+}
+
+.flip-book.initialized {
+  display: block;
+}
+
+/* Individual Pages */
+.page {
+  background-color: #fcfbf9;
+  box-shadow: inset 3px 0 20px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Page shadow overlay for turning */
+.page::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  pointer-events: none;
+}
+
+/* Left page center spine shadow */
+.page.--left::after {
+  right: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 100%);
+}
+
+/* Right page center spine shadow */
+.page.--right::after {
+  left: 0;
+  background: linear-gradient(to left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 100%);
+}
+
+.page-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.page-content canvas {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+}
+
+.page-number {
+  position: absolute;
+  bottom: 12px;
+  font-size: 0.75rem;
+  color: #888;
+  font-weight: 500;
+  user-select: none;
+}
+
+.page.--left .page-number {
+  left: 20px;
+}
+
+.page.--right .page-number {
+  right: 20px;
+}
+
+/* Loading/Progress Overlay */
+#loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  background: rgba(13, 14, 18, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  transition: opacity 0.5s ease;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(99, 102, 241, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--accent);
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 20px;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+}
+
+.loading-text {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.loading-subtext {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Floating Bottom Controls */
+.controls-panel {
+  width: 90%;
+  max-width: 500px;
+  margin: 10px auto 25px;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+.controls-panel #btn-prev,
+.controls-panel #btn-next {
+  flex: 1;
+  max-width: 140px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--surface-glass-border);
+  border-radius: 12px;
+  justify-content: center;
+  gap: 8px;
+}
+
+.controls-panel #btn-prev:hover,
+.controls-panel #btn-next:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+
+/* Custom Buttons styling */
+.btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: var(--transition-smooth);
+}
+
+.btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 16px;
+}
+
+.btn.primary:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.btn.icon-only {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Page indicator middle box */
+.page-indicator-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.page-indicator-box input {
+  width: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--surface-glass-border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  text-align: center;
+  padding: 4px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  outline: none;
+}
+
+.page-indicator-box input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Animations */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 600px) {
+  header {
+    width: 95%;
+    margin: 8px auto;
+    padding: 6px 12px;
+  }
+  
+  h1 {
+    font-size: 0.9rem;
+    max-width: 140px;
+  }
+  
+  .header-actions {
+    gap: 4px;
+  }
+
+  .header-actions .btn.icon-only {
+    width: 32px;
+    height: 32px;
+  }
+
+  .header-actions .btn.icon-only svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  main {
+    padding: 2px;
+  }
+  
+  .viewport-container {
+    max-height: 88vh;
+  }
+  
+  .controls-panel {
+    width: 95%;
+    margin: 4px auto 10px;
+    padding: 6px 10px;
+    gap: 8px;
+  }
+  
+  .controls-panel #btn-prev,
+  .controls-panel #btn-next {
+    max-width: 100px;
+    padding: 10px 8px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+  }
+  
+  .controls-panel #btn-prev span,
+  .controls-panel #btn-next span {
+    display: inline !important; /* show Prev/Next text on mobile */
+  }
+  
+  .controls-panel #btn-prev svg,
+  .controls-panel #btn-next svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .page-indicator-box {
+    font-size: 0.85rem;
+    margin: 0 5px;
+  }
+  
+  .page-indicator-box input {
+    width: 32px;
+    padding: 2px;
+    font-size: 0.85rem;
+  }
+}
