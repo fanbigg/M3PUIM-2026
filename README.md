@@ -22,7 +22,7 @@ Due to browser security policies governing Web Workers and CORS, PDF.js cannot l
 
 1. Open your terminal and navigate to the directory:
    ```bash
-   cd "/Users/irfanfaris/Documents/M3PUIM/app"
+   cd "/Users/usernname/Documents/M3PUIM/app"
    ```
 2. Start a simple Python HTTP server:
    ```bash
